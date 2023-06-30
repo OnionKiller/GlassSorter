@@ -66,6 +66,11 @@ void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, So
 	);
 }
 
+bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
+{
+	return _reached_states.find(state) != _reached_states.end();
+}
+
 void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution & base_solution)
 {
 	for (auto change : changes) {
@@ -86,6 +91,18 @@ void SorterSolver::_process_queue()
 	auto state = _state_list.back();
 	_state_list.pop();
 	inspected_solutions++;
+
+	//check if state is recursive
+	if (_check_if_state_is_recursive(state.current)) {
+		dead_solutions++;
+		return;
+	}
+	else
+	{
+		_reached_states.insert(state.current);
+	}
+
+
 	//check if state is fully homogenous
 	auto finisher = _check_fully_homogen(state.current);
 	if (finisher) {
@@ -94,6 +111,8 @@ void SorterSolver::_process_queue()
 		_broadcast_stop();
 		return;
 	}
+
+
 
 	auto decayed = state.is_decaying();
 	if (decayed) {

@@ -14,6 +14,9 @@ public:
 		glasses = std::vector<Glass>(glass_count);
 	}
 	std::vector<Glass> glasses;
+	bool operator==(const SortingProblemState& other) {
+		return glasses == other.glasses;
+	}
 };
 
 class SortingProblemSolution

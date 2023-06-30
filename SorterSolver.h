@@ -1,6 +1,7 @@
 #pragma once
 #include "SortingProblem.h"
 #include <queue>
+#include <unordered_set>
 
 
 struct SolverParams
@@ -30,6 +31,7 @@ private:
 	//create new follow up states
 	std::vector<changePair> _create_possible_changes(SortingProblemState base_state);
 	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);
+	bool _check_if_state_is_recursive(SortingProblemState state);
 	// apply changes, and upload them to the state queue
 	void _apply_changes(std::vector<changePair> changes, SortingProblemSolution& base_state);
 	//process one que element
@@ -39,6 +41,7 @@ private:
 	void _broadcast_stop();
 	bool _stop = false;
 	std::unique_ptr<SortingProblemSolution> _solution;
+	std::unordered_set<SortingProblemState> _reached_states;
 	uint16_t _depth = 30;
 
 };
