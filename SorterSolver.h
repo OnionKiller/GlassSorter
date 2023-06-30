@@ -29,6 +29,7 @@ private:
 	std::queue<SortingProblemSolution> _state_list;
 	//create new follow up states
 	std::vector<changePair> _create_possible_changes(SortingProblemState base_state);
+	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);
 	// apply changes, and upload them to the state queue
 	void _apply_changes(std::vector<changePair> changes, SortingProblemSolution& base_state);
 	//process one que element

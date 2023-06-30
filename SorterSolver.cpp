@@ -53,11 +53,24 @@ std::vector<changePair> SorterSolver::_create_possible_changes(SortingProblemSta
 	return r_;
 }
 
-void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution& base_state)
+void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution)
+{
+	if (solution.changes.empty())
+		return;
+	std::pair<uint16_t, uint16_t> inverse_change = { solution.changes.back().second,solution.changes.back().first };
+	//check if it's a simple oscillation
+	change_list.erase(
+		std::remove_if(change_list.begin(), change_list.end(), [&](const changePair& change) {
+			return change == inverse_change;
+			}), change_list.end()
+	);
+}
+
+void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution & base_solution)
 {
 	for (auto change : changes) {
 		//copy state
-		SortingProblemSolution new_state = base_state;
+		SortingProblemSolution new_state = base_solution;
 		new_state.apply_change_fast(change);
 		_state_list.push(std::move(new_state));
 		q_additions++;
@@ -90,6 +103,7 @@ void SorterSolver::_process_queue()
 
 	// generate possible followups
 	auto changes = _create_possible_changes(state.current);
+	_remove_oscillations(changes, state);
 	if (changes.empty()) {
 		// dead solution
 		dead_solutions++;
