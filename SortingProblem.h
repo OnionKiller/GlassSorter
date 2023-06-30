@@ -20,7 +20,7 @@ class SortingProblemSolution
 {
 public:
 	SortingProblemSolution() = delete;
-	SortingProblemSolution(uint8_t max_depth,SortingProblemState initial) {
+	SortingProblemSolution(uint16_t max_depth,SortingProblemState initial) {
 		current = initial;
 		changes = std::vector<changePair>();
 		_max_depth = max_depth;
@@ -43,6 +43,6 @@ public:
 	std::vector<changePair> changes;
 	SortingProblemState current;
 protected:
-	int _max_depth = -1;
+	uint16_t _max_depth = -1;
 };
 
