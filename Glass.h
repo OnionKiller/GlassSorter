@@ -19,6 +19,7 @@ public:
 	void combine_from_fast(Glass& other);
 	const uint16_t top() const;
 	friend std::ostream& operator<<(std::ostream& os, const Glass& obj);
+	bool operator==(const Glass& other) const;
 protected:
 	// assumes there are only 2^16 different colours
 	uint16_t _data[glass_size];
@@ -150,3 +151,16 @@ inline 	std::ostream& operator<<(std::ostream& os, const Glass& obj) {
 	return os;
 }
 
+inline bool Glass::operator==(const Glass& other) const
+{
+	if (is_empty() && other.is_empty())
+		return true;
+	if (_top_index != other._top_index)
+		return false;
+	for (auto i = 0; i <= _top_index; i++)
+	{
+		if (_data[i] != other._data[i])
+			return false;
+	}
+	return true;
+}

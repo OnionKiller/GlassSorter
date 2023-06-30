@@ -286,3 +286,49 @@ TEST(TestGlass, TestCout) {
 	ASSERT_EQ(results[1], "{1,1,_,_}");
 	ASSERT_EQ(results[2], "{1,1,1,1}");
 }
+
+TEST(TestGlass, TestEqual) {
+	auto emptyGlass = Glass();
+	auto otherGlass = Glass();
+	auto halfGlass = Glass(1, 1);
+	auto otherHalsfGlass = Glass(1, 1);
+	auto fullGlass = Glass(1, 1, 1, 1);
+	auto otherfullGlass = Glass(1, 1, 1, 2);
+
+	EXPECT_TRUE(emptyGlass == otherGlass);
+	EXPECT_FALSE(emptyGlass == halfGlass);
+	EXPECT_FALSE(emptyGlass == otherHalsfGlass);
+
+	//check different length
+	EXPECT_FALSE(emptyGlass == fullGlass);
+
+	//check different length
+	EXPECT_FALSE(halfGlass == fullGlass);
+	//check same length true
+	EXPECT_TRUE(halfGlass == otherHalsfGlass);
+	//check same length different
+	EXPECT_FALSE(fullGlass == otherfullGlass);
+
+}
+
+TEST(TestGlass, TestEqualVecotrs) {
+	std::vector<Glass> first = {
+		Glass(),
+		Glass(1,1),
+		Glass(1,2,3)
+	};
+	std::vector<Glass> second = {
+		Glass(),
+		Glass(1,1),
+		Glass(1,2,3)
+	};
+	std::vector<Glass> third = {
+		Glass(),
+		Glass(1,1),
+		Glass(1,2,4)
+	};
+
+	EXPECT_TRUE(first == second);
+	EXPECT_FALSE(second == third);
+
+}
