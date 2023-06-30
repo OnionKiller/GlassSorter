@@ -1,7 +1,7 @@
 #pragma once
 #include "SortingProblem.h"
 #include <queue>
-#include <unordered_set>
+#include <vector>
 
 
 struct SolverParams
@@ -41,7 +41,7 @@ private:
 	void _broadcast_stop();
 	bool _stop = false;
 	std::unique_ptr<SortingProblemSolution> _solution;
-	std::unordered_set<SortingProblemState> _reached_states;
+	std::vector<SortingProblemState> _reached_states;
 	uint16_t _depth = 30;
 
 };

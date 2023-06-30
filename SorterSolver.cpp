@@ -68,7 +68,7 @@ void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, So
 
 bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
 {
-	return _reached_states.find(state) != _reached_states.end();
+	return std::find(_reached_states.begin(),_reached_states.end(),state) != _reached_states.end();
 }
 
 void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution & base_solution)
@@ -99,7 +99,7 @@ void SorterSolver::_process_queue()
 	}
 	else
 	{
-		_reached_states.insert(state.current);
+		_reached_states.push_back(state.current);
 	}
 
 
