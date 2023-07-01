@@ -36,17 +36,17 @@ inline Glass::Glass()
 inline Glass::Glass(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3)
 {
 	_data[0] = i0;
-	if (i1 > 4) {
+	if (i1 == uint16_t(-1)) {
 		_top_index = 0;
 		return;
 	}
 	_data[1] = i1;
-	if (i2 > 4) {
+	if (i2 == uint16_t(-1)) {
 		_top_index = 1;
 		return;
 	}
 	_data[2] = i2;
-	if (i3 > 4) {
+	if (i3 == uint16_t(-1)) {
 		_top_index = 2;
 		return;
 	}

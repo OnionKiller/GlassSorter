@@ -81,16 +81,39 @@ TEST(TestGlass, CheckFull) {
 }
 
 TEST(TestGlass, Init4) {
-	auto g = Glass(1, 2, 3, 4);
+	auto g = Glass(7, 6, 5, 3);
 	EXPECT_TRUE(!g.is_empty());
 	EXPECT_TRUE(g.is_full());
-	ASSERT_EQ(g.top(), 4);
+	ASSERT_EQ(g.top(), 3);
 	seeGlass* gg = static_cast<seeGlass*>(&g);
 	ASSERT_EQ(gg->get_top_index(), 3);
-	ASSERT_EQ(gg->get_data()[0], 1);
-	ASSERT_EQ(gg->get_data()[1], 2);
-	ASSERT_EQ(gg->get_data()[2], 3);
-	ASSERT_EQ(gg->get_data()[3], 4);
+	ASSERT_EQ(gg->get_data()[0], 7);
+	ASSERT_EQ(gg->get_data()[1], 6);
+	ASSERT_EQ(gg->get_data()[2], 5);
+	ASSERT_EQ(gg->get_data()[3], 3);
+}
+
+TEST(TestGlass, InitVector) {
+	std::vector<Glass> vec{
+		Glass(4, 3, 2, 1),
+		Glass(7, 6, 5, 3)
+	};
+	auto g = vec[0];
+	EXPECT_TRUE(g.is_full());
+	seeGlass* gg = static_cast<seeGlass*>(&g);
+	ASSERT_EQ(gg->get_top_index(), 3);
+	ASSERT_EQ(gg->get_data()[0], 4);
+	ASSERT_EQ(gg->get_data()[1], 3);
+	ASSERT_EQ(gg->get_data()[2], 2);
+	ASSERT_EQ(gg->get_data()[3], 1);
+	g = vec[1];
+	EXPECT_TRUE(g.is_full());
+	gg = static_cast<seeGlass*>(&g);
+	ASSERT_EQ(gg->get_top_index(), 3);
+	ASSERT_EQ(gg->get_data()[0], 7);
+	ASSERT_EQ(gg->get_data()[1], 6);
+	ASSERT_EQ(gg->get_data()[2], 5);
+	ASSERT_EQ(gg->get_data()[3], 3);
 }
 
 TEST(TestGlass, VariableSizeInit) {
