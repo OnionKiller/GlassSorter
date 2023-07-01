@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "Glass.h"
+#include <ostream>
 
 typedef std::pair<uint16_t, uint16_t> changePair;
 
@@ -9,13 +10,15 @@ typedef std::pair<uint16_t, uint16_t> changePair;
 class SortingProblemState
 {
 public:
-	SortingProblemState() = default;
-	SortingProblemState(int glass_count) {
-		glasses = std::vector<Glass>(glass_count);
-	}
 	std::vector<Glass> glasses;
 	bool operator==(const SortingProblemState& other) {
 		return glasses == other.glasses;
+	}
+	friend std::ostream& operator<<(std::ostream& os, const SortingProblemState& obj) {
+		for (const auto& glass : obj.glasses) {
+			os << glass << std::endl;
+		}
+		return os;
 	}
 };
 
