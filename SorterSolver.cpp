@@ -105,51 +105,53 @@ void SorterSolver::_process_queue()
 		_broadcast_stop();
 		return;
 	}
-	auto state = *std::move(_state_list.front());
+	auto state = std::move(_state_list.front());
 	_state_list.pop();
 	inspected_solutions++;
 
 	//check if state is recursive
-	if (_check_if_state_is_recursive(state.current)) {
+	if (_check_if_state_is_recursive(state->current)) {
 		dead_solutions++;
 		return;
 	}
 	else
 	{
-		_reached_states.insert(state.current);
+		_reached_states.insert(state->current);
 	}
 
-	if (state.changes.size() > _best_score) {
-		_best_score = state.changes.size();
-		_best_solution = std::make_unique<SortingProblemSolution>(state);
+	if (state->changes.size() > _best_score) {
+		_best_score = state->changes.size();
+		//TODO: change to shared pointer
+		_best_solution = std::make_unique<SortingProblemSolution>(*state);
 	}
 
 	//check if state is fully homogenous
-	auto finisher = _check_fully_homogen(state.current);
+	auto finisher = _check_fully_homogen(state->current);
 	if (finisher) {
 		solved = true;
-		_solution = std::make_unique<SortingProblemSolution>(state);
+		//TODO: change to shared pointer
+		_solution = std::make_unique<SortingProblemSolution>(*state);
 		_broadcast_stop();
 		return;
 	}
 
 
 
-	auto decayed = state.is_decaying();
+	auto decayed = state->is_decaying();
 	if (decayed) {
 		decayed_solutions++;
 		return;
 	}
 
 	// generate possible followups
-	auto changes = _create_possible_changes(state.current);
-	_remove_oscillations(changes, state);
+	auto changes = _create_possible_changes(state->current);
+	_remove_oscillations(changes, *state);
 	if (changes.empty()) {
 		// dead solution
 		dead_solutions++;
 		return;
 	}
-	_apply_changes(changes, state);
+	_apply_changes(changes, *state);
 }
 
 bool SorterSolver::_check_fully_homogen(SortingProblemState state)
