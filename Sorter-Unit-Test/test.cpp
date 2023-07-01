@@ -355,3 +355,22 @@ TEST(TestGlass, TestEqualVecotrs) {
 	EXPECT_FALSE(second == third);
 
 }
+
+TEST(TestGlass, TestHash) {
+	auto emptyGlass = Glass();
+	auto fullGlass = Glass(1, 2, 3, 4);
+
+
+	auto hash0 = emptyGlass.hash();
+	auto hash1 = fullGlass.hash();
+	
+	emptyGlass.combine_from_fast(fullGlass);
+
+	auto hash2 = emptyGlass.hash();
+
+	EXPECT_EQ(hash0, 0);
+	EXPECT_EQ(hash1, 0x0001000200030004);
+
+	EXPECT_FALSE(hash2 == hash0);
+	EXPECT_EQ(hash2, 0x0000000000000004);
+}
