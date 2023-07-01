@@ -88,7 +88,7 @@ void SorterSolver::_process_queue()
 		_broadcast_stop();
 		return;
 	}
-	auto state = _state_list.back();
+	auto state = _state_list.front();
 	_state_list.pop();
 	inspected_solutions++;
 
