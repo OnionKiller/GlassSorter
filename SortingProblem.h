@@ -22,10 +22,10 @@ public:
 	}
 
 	uint64_t hash() const noexcept {
-		uint64_t hash = 0;
+		uint64_t hash = 1;
 		for (auto& I : glasses) {
-			hash += I.hash();
-			hash *= 37;
+			// this in theory gives a hash independent from the order of the glasses
+			hash *= I.hash()+1;
 		}
 		return hash;
 	}
