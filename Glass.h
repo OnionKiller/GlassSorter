@@ -164,16 +164,7 @@ inline 	std::ostream& operator<<(std::ostream& os, const Glass& obj) {
 
 inline bool Glass::operator==(const Glass& other) const
 {
-	if (is_empty() && other.is_empty())
-		return true;
-	if (_top_index != other._top_index)
-		return false;
-	for (auto i = 0; i <= _top_index; i++)
-	{
-		if (_data[i] != other._data[i])
-			return false;
-	}
-	return true;
+	return _hash == other._hash;
 }
 
 inline void Glass::_update_hash()
@@ -186,4 +177,13 @@ inline void Glass::_update_hash()
 		_hash = _hash << 16;
 		_hash += _data[i];
 	}
+}
+
+
+namespace std {
+	template<> struct hash<Glass> {
+		std::size_t operator()(const Glass& state)const noexcept {
+			return state.hash();
+		}
+	};
 }
