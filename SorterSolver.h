@@ -30,7 +30,7 @@ public:
 	std::vector<SortingProblemState> get_states();
 	SortingProblemSolution get_best_solution();
 private:
-	std::queue<SortingProblemSolution> _state_list;
+	std::queue<std::unique_ptr<SortingProblemSolution>> _state_list;
 	//create new follow up states
 	std::vector<changePair> _create_possible_changes(SortingProblemState base_state);
 	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);

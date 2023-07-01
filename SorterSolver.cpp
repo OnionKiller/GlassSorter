@@ -13,7 +13,7 @@ void SorterSolver::setup(SortingProblemState initial_state)
 			_state_list.pop();
 	}
 	auto initial_solution = SortingProblemSolution(_depth, initial_state);
-	_state_list.push(std::move(initial_solution));
+	_state_list.push(std::make_unique<SortingProblemSolution>(initial_solution));
 	_best_solution = std::make_unique<SortingProblemSolution>(initial_solution);
 
 }
@@ -94,7 +94,7 @@ void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProble
 		//copy state
 		SortingProblemSolution new_state = base_solution;
 		new_state.apply_change_fast(change);
-		_state_list.push(std::move(new_state));
+		_state_list.push(std::make_unique<SortingProblemSolution>(new_state));
 		q_additions++;
 	}
 }
@@ -105,7 +105,7 @@ void SorterSolver::_process_queue()
 		_broadcast_stop();
 		return;
 	}
-	auto state = std::move(_state_list.front());
+	auto state = *std::move(_state_list.front());
 	_state_list.pop();
 	inspected_solutions++;
 
