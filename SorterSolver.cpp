@@ -14,6 +14,7 @@ void SorterSolver::setup(SortingProblemState initial_state)
 	}
 	auto initial_solution = SortingProblemSolution(_depth, initial_state);
 	_state_list.push(std::move(initial_solution));
+	_best_solution = std::make_unique<SortingProblemSolution>(initial_solution);
 
 }
 
@@ -31,6 +32,16 @@ void SorterSolver::solveBreadthFirst()
 SortingProblemSolution SorterSolver::get_solution()
 {
 	return *_solution;
+}
+
+std::vector<SortingProblemState> SorterSolver::get_states()
+{
+	return _reached_states;
+}
+
+SortingProblemSolution SorterSolver::get_best_solution()
+{
+	return *_best_solution;
 }
 
 std::vector<changePair> SorterSolver::_create_possible_changes(SortingProblemState base_state)
@@ -68,7 +79,8 @@ void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, So
 
 bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
 {
-	return std::find(_reached_states.begin(),_reached_states.end(),state) != _reached_states.end();
+	auto prev = std::find(_reached_states.begin(), _reached_states.end(), state);
+	return prev != _reached_states.end();
 }
 
 void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution & base_solution)
@@ -102,6 +114,10 @@ void SorterSolver::_process_queue()
 		_reached_states.push_back(state.current);
 	}
 
+	if (state.changes.size() > _best_score) {
+		_best_score = state.changes.size();
+		_best_solution = std::make_unique<SortingProblemSolution>(state);
+	}
 
 	//check if state is fully homogenous
 	auto finisher = _check_fully_homogen(state.current);
@@ -122,7 +138,7 @@ void SorterSolver::_process_queue()
 
 	// generate possible followups
 	auto changes = _create_possible_changes(state.current);
-	_remove_oscillations(changes, state);
+	//_remove_oscillations(changes, state);
 	if (changes.empty()) {
 		// dead solution
 		dead_solutions++;

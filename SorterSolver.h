@@ -26,6 +26,8 @@ public:
 	//is solved
 	bool solved = false;
 	SortingProblemSolution get_solution();
+	std::vector<SortingProblemState> get_states();
+	SortingProblemSolution get_best_solution();
 private:
 	std::queue<SortingProblemSolution> _state_list;
 	//create new follow up states
@@ -41,8 +43,10 @@ private:
 	void _broadcast_stop();
 	bool _stop = false;
 	std::unique_ptr<SortingProblemSolution> _solution;
+	std::unique_ptr<SortingProblemSolution> _best_solution;
 	std::vector<SortingProblemState> _reached_states;
 	uint16_t _depth = 30;
+	size_t _best_score = 0;
 
 };
 
