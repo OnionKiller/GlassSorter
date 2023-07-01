@@ -11,7 +11,7 @@ class SortingProblemState
 {
 public:
 	std::vector<Glass> glasses;
-	bool operator==(const SortingProblemState& other) {
+	bool operator==(const SortingProblemState& other) const{
 		return glasses == other.glasses;
 	}
 	friend std::ostream& operator<<(std::ostream& os, const SortingProblemState& obj) {
@@ -20,7 +20,25 @@ public:
 		}
 		return os;
 	}
+
+	uint64_t hash() const noexcept {
+		uint64_t hash = 0;
+		for (auto& I : glasses) {
+			hash += I.hash();
+			hash *= 37;
+		}
+		return hash;
+	}
 };
+
+namespace std {
+	template<> struct hash<SortingProblemState> {
+		std::size_t operator()(const SortingProblemState& state)const noexcept {
+			return state.hash();
+		}
+	};
+}
+
 
 class SortingProblemSolution
 {

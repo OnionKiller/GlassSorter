@@ -36,7 +36,12 @@ SortingProblemSolution SorterSolver::get_solution()
 
 std::vector<SortingProblemState> SorterSolver::get_states()
 {
-	return _reached_states;
+	std::vector<SortingProblemState> r_;
+	r_.reserve(_reached_states.size());
+	for (auto it = _reached_states.begin(); it != _reached_states.end(); ) {
+		r_.push_back(std::move(_reached_states.extract(it++).value()));
+	}
+	return r_;
 }
 
 SortingProblemSolution SorterSolver::get_best_solution()
@@ -79,7 +84,7 @@ void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, So
 
 bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
 {
-	auto prev = std::find(_reached_states.begin(), _reached_states.end(), state);
+	auto prev = _reached_states.find(state);
 	return prev != _reached_states.end();
 }
 
@@ -100,7 +105,7 @@ void SorterSolver::_process_queue()
 		_broadcast_stop();
 		return;
 	}
-	auto state = _state_list.front();
+	auto state = std::move(_state_list.front());
 	_state_list.pop();
 	inspected_solutions++;
 
@@ -111,7 +116,7 @@ void SorterSolver::_process_queue()
 	}
 	else
 	{
-		_reached_states.push_back(state.current);
+		_reached_states.insert(state.current);
 	}
 
 	if (state.changes.size() > _best_score) {
@@ -138,7 +143,7 @@ void SorterSolver::_process_queue()
 
 	// generate possible followups
 	auto changes = _create_possible_changes(state.current);
-	//_remove_oscillations(changes, state);
+	_remove_oscillations(changes, state);
 	if (changes.empty()) {
 		// dead solution
 		dead_solutions++;

@@ -2,6 +2,7 @@
 #include "SortingProblem.h"
 #include <queue>
 #include <vector>
+#include <unordered_set>
 
 
 struct SolverParams
@@ -44,7 +45,7 @@ private:
 	bool _stop = false;
 	std::unique_ptr<SortingProblemSolution> _solution;
 	std::unique_ptr<SortingProblemSolution> _best_solution;
-	std::vector<SortingProblemState> _reached_states;
+	std::unordered_set<SortingProblemState> _reached_states;
 	uint16_t _depth = 30;
 	size_t _best_score = 0;
 
