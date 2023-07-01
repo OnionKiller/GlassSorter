@@ -18,7 +18,7 @@ public:
 	bool combine_from(Glass& other);
 	void combine_from_fast(Glass& other);
 	const uint16_t top() const;
-	const uint64_t hash() const;
+	const uint16_t hash() const;
 	friend std::ostream& operator<<(std::ostream& os, const Glass& obj);
 	bool operator==(const Glass& other) const;
 protected:
@@ -26,7 +26,7 @@ protected:
 	// assumes there are only 2^16 different colours
 	uint16_t _data[glass_size];
 	uint8_t _top_index;
-	uint64_t _hash = 0;
+	uint16_t _hash = 0;
 
 };
 
@@ -100,7 +100,7 @@ inline const uint16_t Glass::top() const {
 	return _data[_top_index];
 }
 
-inline const uint64_t Glass::hash() const
+inline const uint16_t Glass::hash() const
 {
 	return _hash;
 }
@@ -182,8 +182,7 @@ inline void Glass::_update_hash()
 	if (is_empty())
 		return;
 	for (auto i = 0; i <= _top_index; i++) {
-		//hope for little endian
-		_hash = _hash << 16;
 		_hash += _data[i];
+		_hash *= 11;
 	}
 }

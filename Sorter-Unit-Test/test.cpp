@@ -369,8 +369,8 @@ TEST(TestGlass, TestHash) {
 	auto hash2 = emptyGlass.hash();
 
 	EXPECT_EQ(hash0, 0);
-	EXPECT_EQ(hash1, 0x0001000200030004);
+	EXPECT_EQ(hash1, (((1*11+2)*11+3)*11+4)*11);
 
 	EXPECT_FALSE(hash2 == hash0);
-	EXPECT_EQ(hash2, 0x0000000000000004);
+	EXPECT_EQ(hash2, 4*11);
 }
