@@ -359,10 +359,16 @@ TEST(TestGlass, TestEqualVecotrs) {
 TEST(TestGlass, TestHash) {
 	auto emptyGlass = Glass();
 	auto fullGlass = Glass(1, 2, 3, 4);
+	auto x1Glass = Glass(1);
+	auto x2Glass = Glass(1, 2);
+	auto x3Glass = Glass(1, 2, 3);
 
 
 	auto hash0 = emptyGlass.hash();
 	auto hash1 = fullGlass.hash();
+	auto hash11 = x1Glass.hash();
+	auto hash12 = x2Glass.hash();
+	auto hash13 = x3Glass.hash();
 	
 	emptyGlass.combine_from_fast(fullGlass);
 
@@ -370,6 +376,9 @@ TEST(TestGlass, TestHash) {
 
 	EXPECT_EQ(hash0, 0);
 	EXPECT_EQ(hash1, 0x0001000200030004);
+	EXPECT_EQ(hash11, 0x0000000000000001);
+	EXPECT_EQ(hash12, 0x0000000000010002);
+	EXPECT_EQ(hash13, 0x0000000100020003);
 
 	EXPECT_FALSE(hash2 == hash0);
 	EXPECT_EQ(hash2, 0x0000000000000004);
