@@ -1,8 +1,8 @@
 #pragma once
-#include "SortingProblem.h"
 #include <queue>
 #include <vector>
-#include <unordered_set>
+#include "SortingProblemSolution.h"
+#include "StateProvider.h"
 
 
 struct SolverParams
@@ -30,24 +30,18 @@ public:
 	std::vector<SortingProblemState> get_states();
 	SortingProblemSolution get_best_solution();
 private:
-	std::queue<std::unique_ptr<SortingProblemSolution>> _state_list;
-	//create new follow up states
-	std::vector<changePair> _create_possible_changes(SortingProblemState base_state);
-	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);
-	bool _check_if_state_is_recursive(SortingProblemState state);
-	// apply changes, and upload them to the state queue
-	void _apply_changes(std::vector<changePair> changes, SortingProblemSolution& base_state);
+	std::queue<std::shared_ptr<SortingProblemSolution>> _state_list;
+	//create new follow up solutions from the state provider (this is the key)
+	std::vector<std::shared_ptr<SortingProblemSolution>> _create_possible_solutions(std::shared_ptr<SortingProblemSolution> base_solutions);
 	//process one que element
 	void _process_queue();
 	//check state if fully homogenous
-	bool _check_fully_homogen(SortingProblemState state);
 	void _broadcast_stop();
 	bool _stop = false;
-	std::unique_ptr<SortingProblemSolution> _solution;
-	std::unique_ptr<SortingProblemSolution> _best_solution;
-	std::unordered_set<SortingProblemState> _reached_states;
+	std::shared_ptr<SortingProblemSolution> _solution;
+	std::shared_ptr<SortingProblemSolution> _best_solution;
+	std::unique_ptr<StateProvider> _state_provider;
 	uint16_t _depth = 30;
 	size_t _best_score = 0;
-
 };
 
