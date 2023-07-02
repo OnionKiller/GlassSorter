@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SortingProblem.h">
+    <ClInclude Include="SortingProblemSolution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Glass.h">
@@ -33,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SortingProblemState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

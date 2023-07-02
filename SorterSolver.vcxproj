@@ -147,8 +147,9 @@
   <ItemGroup>
     <ClInclude Include="Glass.h" />
     <ClInclude Include="SorterSolver.h" />
-    <ClInclude Include="SortingProblem.h" />
+    <ClInclude Include="SortingProblemSolution.h" />
     <ClInclude Include="SortingProblemState.h" />
+    <ClInclude Include="StateProvider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
