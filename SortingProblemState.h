@@ -21,7 +21,7 @@ public:
 		return os;
 	}
 	uint64_t hash() const noexcept { return _hash; }
-	uint16_t size() const noexcept { return _glasses.size(); }
+	size_t size() const noexcept { return _glasses.size(); }
 	bool accepts_change(const uint16_t to, const uint16_t from) const;
 	bool is_homogen() const noexcept;
 protected:
