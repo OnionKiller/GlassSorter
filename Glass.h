@@ -139,7 +139,7 @@ inline void Glass::combine_from_fast(Glass& other)
 		if (is_full())
 			break;
 		if (other.is_empty())
-			return;
+			break;
 		if (this->_data[_top_index] != other._data[other._top_index])
 			break;
 		//in theory this handles the emptyness with overflow, altough it is unclear if this is a good idea
@@ -148,6 +148,7 @@ inline void Glass::combine_from_fast(Glass& other)
 		this->_top_index++;
 	}
 	_update_hash();
+	other._update_hash();
 }
 
 inline 	std::ostream& operator<<(std::ostream& os, const Glass& obj) {
