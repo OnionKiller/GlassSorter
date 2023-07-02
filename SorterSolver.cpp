@@ -54,6 +54,8 @@ std::vector<std::shared_ptr<SortingProblemSolution>> SorterSolver::_create_possi
 	for (uint16_t from = 0; from < size + 1; from++)
 	for (uint16_t to   = 0; to   < size + 1;   to++)
 	{
+		if (from == to)
+			continue;
 		changePair change = { to,from };
 		auto new_state = _state_provider->get_new_state(base_solutions->current, change);
 		if (new_state.get() != nullptr) {
