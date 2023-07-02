@@ -11,8 +11,7 @@ int main()
 
 	auto solver = SorterSolver(SolverParams{ 40 });
 
-	auto initial_state = SortingProblemState(14);
-	initial_state.glasses = {
+	std::vector<Glass> init = {
 		Glass(1,2,3,4),
 		Glass(3,5,6,7),
 		Glass(8,9,10,4),
@@ -29,6 +28,15 @@ int main()
 		Glass(),
 	};
 
+	init = {
+		Glass(1,2,1,4),
+		Glass(1,2,2,4),
+		Glass(1,2,4,4),
+		Glass(),
+		Glass()
+	};
+	auto initial_state = SortingProblemState(init);
+
 	solver.setup(initial_state);
 	solver.solveBreadthFirst();
 
@@ -42,9 +50,7 @@ int main()
 			std::cout << '{' << I.first << ',' << I.second << "} ";
 		}
 		std::cout << std::endl;
-		for (const auto& glass : solution.current.glasses) {
-			std::cout << glass << std::endl;
-		}
+		std::cout << solution.current << std::endl;
 	}
 	else
 	{
