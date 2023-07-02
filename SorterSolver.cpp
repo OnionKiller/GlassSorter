@@ -93,7 +93,9 @@ void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProble
 	for (auto change : changes) {
 		//copy state
 		SortingProblemSolution new_state = base_solution;
-		new_state.apply_change_fast(change);
+		//new_state.apply_change_fast(change);
+		if (!new_state.apply_change(change))
+			throw std::exception("Wrong change occured!");
 		_state_list.push(std::make_unique<SortingProblemSolution>(new_state));
 		q_additions++;
 	}
