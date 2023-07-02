@@ -273,6 +273,37 @@ TEST(TestGlass, CombineTestInterrupted) {
 	);
 }
 
+TEST(TestGlass, allCombineTest) {
+	std::vector<Glass> glist = {
+		Glass(1,2,2,4),
+		Glass(1,1,4,4),
+		Glass(4,2,2,1),
+		Glass(),
+		Glass(),
+	};
+	glist[3].combine_from(glist[2]);
+	EXPECT_EQ(glist[3], Glass(1));
+	EXPECT_EQ(glist[2], Glass(4,2,2));
+	glist[4].combine_from(glist[2]);
+	EXPECT_EQ(glist[4], Glass(2,2));
+	EXPECT_EQ(glist[2], Glass(4));
+	glist[2].combine_from(glist[0]);
+	EXPECT_EQ(glist[2], Glass(4, 4));
+	EXPECT_EQ(glist[0], Glass(1,2,2));
+	glist[2].combine_from(glist[1]);
+	EXPECT_EQ(glist[2], Glass(4, 4, 4, 4));
+	EXPECT_EQ(glist[1], Glass(1,1));
+	glist[4].combine_from(glist[0]);
+	EXPECT_EQ(glist[4], Glass(2, 2, 2, 2));
+	EXPECT_EQ(glist[0], Glass(1));
+	glist[3].combine_from(glist[0]);
+	EXPECT_EQ(glist[3], Glass(1, 1));
+	EXPECT_EQ(glist[0], Glass());
+	glist[1].combine_from(glist[3]);
+	EXPECT_EQ(glist[1], Glass(1, 1, 1, 1));
+	EXPECT_EQ(glist[3], Glass());
+}
+
 TEST(TestGlass, TestHomogenous) {
 	const uint16_t test_case_1[] = { 2,2,2,2 };
 	const uint16_t test_case_2[] = { 2,2,1 };
