@@ -32,10 +32,10 @@
     <ClInclude Include="SorterSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SortingProblemState.h">
+    <ClInclude Include="StateProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StateProvider.h">
+    <ClInclude Include="SortingProblemState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
