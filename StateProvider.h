@@ -36,3 +36,12 @@ inline std::shared_ptr<SortingProblemState> StateProvider::get_new_state(std::sh
 	init_test->reset_test_mutation();
 	return std::shared_ptr<SortingProblemState>();
 }
+
+inline std::vector<SortingProblemState> StateProvider::get_states()
+{
+	auto r_ = std::vector<SortingProblemState>();
+	for (auto& I : _reached_states) {
+		r_.push_back(I);
+	}
+		return r_;
+}
