@@ -11,7 +11,7 @@ int main()
 
 	auto solver = SorterSolver(SolverParams{ 40 });
 
-	auto initial_state = SortingProblemState(14);
+	auto initial_state = SortingProblemState();
 	initial_state.glasses = {
 		Glass(1,2,3,4),
 		Glass(3,5,6,7),
@@ -28,6 +28,21 @@ int main()
 		Glass(),
 		Glass(),
 	};
+
+	/*
+	initial_state.glasses = {
+	Glass(1,2,3,4),
+	Glass(4,2,3,4),
+	Glass(1,2,3,1),
+	Glass(3,1,4,2),
+	Glass(),
+	Glass(),
+	Glass(),
+	Glass(),
+	};
+	*/
+
+	std::cout << initial_state << std::endl;
 
 	solver.setup(initial_state);
 	solver.solveBreadthFirst();
@@ -51,6 +66,10 @@ int main()
 		std::cout << "Decayed: " << solver.decayed_solutions << std::endl;
 		std::cout << "Dead ends: " << solver.dead_solutions << std::endl;
 		std::cout << "Queue addition count: " << solver.q_additions<< std::endl;
+		//reached states
+		auto states =  solver.get_states();
+		for (auto i = states.size();i --> states.size()-30; )
+			std::cout << states[i]<< std::endl;
 	}
 
 }
