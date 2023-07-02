@@ -30,19 +30,24 @@ public:
 	std::vector<SortingProblemState> get_states();
 	SortingProblemSolution get_best_solution();
 private:
-	std::queue<std::unique_ptr<SortingProblemSolution>> _state_list;
-	//create new follow up states
-	std::vector<changePair> _create_possible_changes(SortingProblemState base_state);
-	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);
-	bool _check_if_state_is_recursive(SortingProblemState state);
 	// apply changes, and upload them to the state queue
 	void _apply_changes(std::vector<changePair> changes, SortingProblemSolution& base_state);
+
 	//process one que element
 	void _process_queue();
-	//check state if fully homogenous
-	bool _check_fully_homogen(SortingProblemState state);
+
+	//create new follow up states
+	std::vector<changePair> _create_possible_changes(const SortingProblemState& base_state);
+
+	bool _check_if_state_is_recursive(const SortingProblemState& state);
+	void _remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution);
+	bool _check_fully_homogen(const SortingProblemState& state);
+	
 	void _broadcast_stop();
+
+
 	bool _stop = false;
+	std::queue<std::unique_ptr<SortingProblemSolution>> _state_list;
 	std::unique_ptr<SortingProblemSolution> _solution;
 	std::unique_ptr<SortingProblemSolution> _best_solution;
 	std::unordered_set<SortingProblemState> _reached_states;

@@ -49,7 +49,7 @@ SortingProblemSolution SorterSolver::get_best_solution()
 	return *_best_solution;
 }
 
-std::vector<changePair> SorterSolver::_create_possible_changes(SortingProblemState base_state)
+std::vector<changePair> SorterSolver::_create_possible_changes(const SortingProblemState& base_state)
 {
 	auto r_ =  std::vector<changePair>();
 
@@ -82,7 +82,7 @@ void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, So
 	);
 }
 
-bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
+bool SorterSolver::_check_if_state_is_recursive(const SortingProblemState& state)
 {
 	auto prev = _reached_states.find(state);
 	return prev != _reached_states.end();
@@ -154,7 +154,7 @@ void SorterSolver::_process_queue()
 	_apply_changes(changes, *state);
 }
 
-bool SorterSolver::_check_fully_homogen(SortingProblemState state)
+bool SorterSolver::_check_fully_homogen(const SortingProblemState& state)
 {
 	for (const auto& glass : state.glasses) {
 		if (!glass.is_homogen())
