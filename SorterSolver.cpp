@@ -51,8 +51,8 @@ std::vector<std::shared_ptr<SortingProblemSolution>> SorterSolver::_create_possi
 {
 	auto r_ =  std::vector<std::shared_ptr<SortingProblemSolution>>();
 	auto size = base_solutions->current->size();
-	for (uint16_t from = 0; from < size + 1; from++)
-	for (uint16_t to   = 0; to   < size + 1;   to++)
+	for (uint16_t from = 0; from < size; from++)
+	for (uint16_t to   = 0; to   < size;   to++)
 	{
 		if (from == to)
 			continue;
