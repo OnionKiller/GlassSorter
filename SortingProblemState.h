@@ -12,6 +12,7 @@ class SortingProblemState
 public:
 	SortingProblemState(std::vector<Glass> glasses);
 	SortingProblemState create_new_state(changePair change);
+	virtual ~SortingProblemState() = default;
 	bool operator==(const SortingProblemState& other) const;
 	friend std::ostream& operator<<(std::ostream& os, const SortingProblemState& obj)
 	{
@@ -28,28 +29,46 @@ protected:
 	std::vector<Glass> _glasses;
 	void _update_hash();
 	uint64_t _hash = 1;
+
+	friend class TestMutableSortingProblemState;
 };
 
 //use very carefully
-class TestMutableSortingProblemState : public SortingProblemState {
+class TestMutableSortingProblemState{
 public:
-	TestMutableSortingProblemState(std::vector<Glass> init) :SortingProblemState(init) {
+	TestMutableSortingProblemState(std::shared_ptr<SortingProblemState> base) {
+		_base = base;
+		_mutated = false;
 		_glasses_test = std::vector<Glass>(2);
 	}
-	//use very carefully
+	//use very carefully: change represents in the form of {to,from}
 	void mutate_for_test(changePair change) {
+		_mutated = true;
 		_test_change = change;
-		_glasses_test[0] = _glasses[change.first];
-		_glasses_test[1] = _glasses[change.second];
-		_glasses[change.first].combine_from_fast(_glasses[change.second]);
+		_glasses_test[0] = _base->_glasses[change.first];
+		_glasses_test[1] = _base->_glasses[change.second];
+		_base->_glasses[change.first].combine_from_fast(_base->_glasses[change.second]);
+		_base->_update_hash();
 	}
 
 	//use very carefully
 	void reset_test_mutation() {
-		_glasses[_test_change.first] = _glasses_test[0];
-		_glasses[_test_change.second] = _glasses_test[1];
+		_mutated = false;
+		_base->_glasses[_test_change.first] = _glasses_test[0];
+		_base->_glasses[_test_change.second] = _glasses_test[1];
+		_base->_update_hash();
+	}
+	~TestMutableSortingProblemState()
+	{
+		if (_mutated) {
+			reset_test_mutation();
+			std::cout << "Implicit reversal of mutation. It is an error on your behalf, fix your code!";
+			//throw std::exception("Temporarily mutated immutable object is not reversed!");
+		}
 	}
 private:
+	bool  _mutated;
+	std::shared_ptr<SortingProblemState> _base;
 	std::vector<Glass> _glasses_test;
 	changePair _test_change;
 };
