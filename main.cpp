@@ -9,7 +9,7 @@ int main()
 {
 	std::cout << std::boolalpha;
 
-	auto solver = SorterSolver(SolverParams{ 40 });
+	auto solver = SorterSolver(SolverParams{ 50 });
 
 	std::vector<Glass> init = {
 		Glass(1,2,3,4),
@@ -28,13 +28,14 @@ int main()
 		Glass(),
 	};
 
+	/*
 	init = {
 		Glass(1,2,1,4),
 		Glass(1,2,2,4),
 		Glass(1,2,4,4),
 		Glass(),
 		Glass()
-	};
+	};*/
 	auto initial_state = SortingProblemState(init);
 
 	solver.setup(initial_state);
@@ -50,7 +51,7 @@ int main()
 			std::cout << '{' << I.first << ',' << I.second << "} ";
 		}
 		std::cout << std::endl;
-		std::cout << solution.current << std::endl;
+		std::cout << *solution.current << std::endl;
 	}
 	else
 	{
