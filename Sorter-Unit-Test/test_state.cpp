@@ -190,3 +190,67 @@ TEST(TestState, IsHomogen) {
 	EXPECT_FALSE(s2.is_homogen());
 	EXPECT_TRUE(s3.is_homogen());
 }
+
+
+TEST(TestMutation, init) {
+	EXPECT_NO_THROW(
+		auto init = SortingProblemState({
+			Glass(1,2),
+			Glass()
+			});
+		std::shared_ptr<SortingProblemState> ptr = std::make_shared<SortingProblemState>(init);
+		{
+			auto init_test = std::make_unique<TestMutableSortingProblemState>(ptr);
+			init_test->mutate_for_test({ 0,1 });
+			init_test->reset_test_mutation();
+		}
+	);
+}
+
+TEST(TestMutation, reset_implicit) {
+	auto init = SortingProblemState({
+			Glass(1,2),
+			Glass()
+		});
+	std::shared_ptr<SortingProblemState> ptr = std::make_shared<SortingProblemState>(init);
+	auto init_test = std::make_unique<TestMutableSortingProblemState>(ptr);
+	init_test->mutate_for_test({ 1,0 });
+	init_test.release();
+	auto checkstate = SortingProblemState({
+			Glass(1,2),
+			Glass()
+		});
+	EXPECT_EQ(init, checkstate);
+}
+
+TEST(TestMutation, reset_explicit) {
+	auto init = SortingProblemState({
+			Glass(1,2),
+			Glass()
+		});
+	std::shared_ptr<SortingProblemState> ptr = std::make_shared<SortingProblemState>(init);
+	auto init_test = std::make_unique<TestMutableSortingProblemState>(ptr);
+	init_test->mutate_for_test({ 1,0 });
+	init_test->reset_test_mutation();
+	auto checkstate = SortingProblemState({
+			Glass(1,2),
+			Glass()
+		});
+	EXPECT_EQ(init, checkstate);
+}
+
+TEST(TestMutation, mutate) {
+	auto init = SortingProblemState({
+			Glass(1,2),
+			Glass()
+		});
+	std::shared_ptr<SortingProblemState> ptr = std::make_shared<SortingProblemState>(init);
+	auto init_test = std::make_unique<TestMutableSortingProblemState>(ptr);
+	init_test->mutate_for_test({ 1,0 });
+	auto checkstate = SortingProblemState({
+			Glass(1),
+			Glass(2)
+		});
+	EXPECT_EQ(*ptr, checkstate);
+	init_test->reset_test_mutation();
+}
