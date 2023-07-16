@@ -14,6 +14,15 @@ protected:
 	std::unordered_set<SortingProblemState> _reached_states;
 };
 
+class SafeStateProvider : public StateProvider
+{
+public:
+	SafeStateProvider(SortingProblemState& initial) :StateProvider(initial) {};
+	size_t caught_unsafe_combines = 0;
+	// return nullptr if not a new unique
+	std::shared_ptr<SortingProblemState> get_new_state(std::shared_ptr<SortingProblemState> init_state, changePair change);
+};
+
 inline StateProvider::StateProvider(SortingProblemState& initial)
 {
 	_reached_states.insert(std::move(initial));
@@ -44,4 +53,13 @@ inline std::vector<SortingProblemState> StateProvider::get_states()
 		r_.push_back(I);
 	}
 		return r_;
+}
+
+inline std::shared_ptr<SortingProblemState> SafeStateProvider::get_new_state(std::shared_ptr<SortingProblemState> init_state, changePair change)
+{
+	if (!init_state->accepts_change(change.first, change.second)) {
+		caught_unsafe_combines++;
+		return nullptr;
+	}
+	return StateProvider::get_new_state(init_state, change);
 }
