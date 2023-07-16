@@ -27,14 +27,15 @@ int main()
 		Glass(),
 		Glass(),
 	};
-
 	/*
 	init = {
 		Glass(1,2,1,4),
 		Glass(1,2,2,4),
 		Glass(1,2,4,4),
+		Glass(13,7,13,7),
+		Glass(13,13,7,7),
 		Glass(),
-		Glass()
+		Glass(),
 	};*/
 	auto initial_state = SortingProblemState(init);
 
@@ -42,8 +43,9 @@ int main()
 	solver.solveBreadthFirst();
 
 	std::cout << "Could solve:" << solver.solved << std::endl
-		<< "Inspected:" << solver.inspected_solutions 
-		<< std::endl;
+		<< "Inspected:" << solver.inspected_solutions << std::endl
+		<< "Wrong chnges:" << solver.wrong_change << std::endl
+		<< "---------------------------------------" << std::endl;
 	if (solver.solved) 
 	{
 		auto solution = solver.get_solution();

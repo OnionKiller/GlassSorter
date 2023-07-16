@@ -24,6 +24,8 @@ public:
 	size_t dead_solutions = 0;
 	//coutn queue additions
 	size_t q_additions = 0;
+	//count wrong changes
+	size_t wrong_change = 0;
 	//is solved
 	bool solved = false;
 	SortingProblemSolution get_solution();

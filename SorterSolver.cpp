@@ -28,6 +28,7 @@ void SorterSolver::solveBreadthFirst()
 	{
 		_process_queue();
 	}
+	wrong_change = _state_provider->caught_unsafe_combines;
 }
 
 SortingProblemSolution SorterSolver::get_solution()
