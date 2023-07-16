@@ -43,6 +43,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="test_glass.cpp" />
+    <ClCompile Include="test_provider.cpp" />
     <ClCompile Include="test_state.cpp" />
   </ItemGroup>
   <ItemGroup>
