@@ -40,7 +40,7 @@ private:
 	bool _stop = false;
 	std::shared_ptr<SortingProblemSolution> _solution;
 	std::shared_ptr<SortingProblemSolution> _best_solution;
-	std::unique_ptr<StateProvider> _state_provider;
+	std::unique_ptr<SafeStateProvider> _state_provider;
 	uint16_t _depth = 30;
 	size_t _best_score = 0;
 };

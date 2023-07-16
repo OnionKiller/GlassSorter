@@ -15,7 +15,7 @@ void SorterSolver::setup(SortingProblemState initial_state)
 	auto initial_solution = SortingProblemSolution(_depth, std::make_shared<SortingProblemState>(initial_state));
 	_state_list.push(std::make_unique<SortingProblemSolution>(initial_solution));
 	_best_solution = std::make_unique<SortingProblemSolution>(initial_solution);
-	_state_provider = std::make_unique<StateProvider>(StateProvider(initial_state));
+	_state_provider = std::make_unique<SafeStateProvider>(SafeStateProvider(initial_state));
 
 }
 
@@ -57,6 +57,7 @@ std::vector<std::shared_ptr<SortingProblemSolution>> SorterSolver::_create_possi
 		if (from == to)
 			continue;
 		changePair change = { to,from };
+		//TODO: ad missing from-to check, which is now implemented in the SafeStateProvider
 		auto new_state = _state_provider->get_new_state(base_solutions->current, change);
 		if (new_state.get() != nullptr) {
 			auto new_solution = SortingProblemSolution(*base_solutions,change,new_state);
