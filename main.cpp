@@ -9,10 +9,9 @@ int main()
 {
 	std::cout << std::boolalpha;
 
-	auto solver = SorterSolver(SolverParams{ 40 });
+	auto solver = SorterSolver(SolverParams{ 50 });
 
-	auto initial_state = SortingProblemState();
-	initial_state.glasses = {
+	std::vector<Glass> init = {
 		Glass(1,2,3,4),
 		Glass(3,5,6,7),
 		Glass(8,9,10,4),
@@ -28,6 +27,17 @@ int main()
 		Glass(),
 		Glass(),
 	};
+	/*
+	init = {
+		Glass(1,2,1,4),
+		Glass(1,2,2,4),
+		Glass(1,2,4,4),
+		Glass(13,7,13,7),
+		Glass(13,13,7,7),
+		Glass(),
+		Glass(),
+	};*/
+	auto initial_state = SortingProblemState(init);
 
 	/*
 	initial_state.glasses = {
@@ -48,8 +58,9 @@ int main()
 	solver.solveBreadthFirst();
 
 	std::cout << "Could solve:" << solver.solved << std::endl
-		<< "Inspected:" << solver.inspected_solutions 
-		<< std::endl;
+		<< "Inspected:" << solver.inspected_solutions << std::endl
+		<< "Wrong chnges:" << solver.wrong_change << std::endl
+		<< "---------------------------------------" << std::endl;
 	if (solver.solved) 
 	{
 		auto solution = solver.get_solution();
@@ -57,9 +68,7 @@ int main()
 			std::cout << '{' << I.first << ',' << I.second << "} ";
 		}
 		std::cout << std::endl;
-		for (const auto& glass : solution.current.glasses) {
-			std::cout << glass << std::endl;
-		}
+		std::cout << *solution.current << std::endl;
 	}
 	else
 	{

@@ -1,6 +1,8 @@
+
 #include "pch.h"
 #include "../Glass.h"
 #include <vector>
+
 
 class seeGlass :public Glass {
 public:
@@ -53,7 +55,7 @@ TEST(TestGlass, Init1) {
 }
 
 TEST(TestGlass, Init2) {
-	auto g = Glass(1,2);
+	auto g = Glass(1, 2);
 	EXPECT_TRUE(!g.is_empty());
 	EXPECT_TRUE(!g.is_full());
 	ASSERT_EQ(g.top(), 2);
@@ -64,7 +66,7 @@ TEST(TestGlass, Init2) {
 }
 
 TEST(TestGlass, Init3) {
-	auto g = Glass(1,2,3);
+	auto g = Glass(1, 2, 3);
 	EXPECT_TRUE(!g.is_empty());
 	EXPECT_TRUE(!g.is_full());
 	ASSERT_EQ(g.top(), 3);
@@ -162,12 +164,12 @@ TEST(TestGlass, VariableSizeInitOversize) {
 TEST(TestGlass, AcceptsCombineEmptyFull) {
 	const uint16_t full_data[] = { 1,2,3,4 };
 	const uint16_t same_data[] = { 1,2 };
-	const uint16_t diff_data[] = { 1,2,3};
+	const uint16_t diff_data[] = { 1,2,3 };
 
 	Glass emptyGlass = Glass();
 	Glass fullGlass = Glass((uint16_t*)full_data, 4);
 	Glass otherEmptyGlass = Glass();
-	Glass sameTopGlass =  Glass((uint16_t*)same_data, 2);
+	Glass sameTopGlass = Glass((uint16_t*)same_data, 2);
 	Glass differentTopGlass = Glass((uint16_t*)diff_data, 3);
 
 	// Test when the current glass is empty
@@ -392,7 +394,7 @@ TEST(TestGlass, TestHash) {
 	auto fullGlass = Glass(1, 2, 3, 4);
 	auto x1Glass = Glass(1);
 	auto x2Glass = Glass(1, 2);
-	auto x3Glass = Glass(1, 2, 3);
+	auto x3Glass = Glass(1, 2, 2);
 
 
 	auto hash0 = emptyGlass.hash();
@@ -400,17 +402,25 @@ TEST(TestGlass, TestHash) {
 	auto hash11 = x1Glass.hash();
 	auto hash12 = x2Glass.hash();
 	auto hash13 = x3Glass.hash();
-	
+
 	emptyGlass.combine_from_fast(fullGlass);
 
 	auto hash2 = emptyGlass.hash();
+	
+	x3Glass.combine_from_fast(x2Glass);
+	auto hash3 = x3Glass.hash();
+	auto hash4 = x2Glass.hash();
+
 
 	EXPECT_EQ(hash0, 0);
 	EXPECT_EQ(hash1, 0x0001000200030004);
 	EXPECT_EQ(hash11, 0x0000000000000001);
 	EXPECT_EQ(hash12, 0x0000000000010002);
-	EXPECT_EQ(hash13, 0x0000000100020003);
+	EXPECT_EQ(hash13, 0x0000000100020002);
 
 	EXPECT_FALSE(hash2 == hash0);
 	EXPECT_EQ(hash2, 0x0000000000000004);
+	EXPECT_EQ(hash3, 0x0001000200020002);
+	EXPECT_EQ(hash4, 0x0000000000000001);
+
 }

@@ -12,9 +12,10 @@ void SorterSolver::setup(SortingProblemState initial_state)
 		for (auto i = _state_list.size(); i-- > 0;)
 			_state_list.pop();
 	}
-	auto initial_solution = SortingProblemSolution(_depth, initial_state);
+	auto initial_solution = SortingProblemSolution(_depth, std::make_shared<SortingProblemState>(initial_state));
 	_state_list.push(std::make_unique<SortingProblemSolution>(initial_solution));
 	_best_solution = std::make_unique<SortingProblemSolution>(initial_solution);
+	_state_provider = std::make_unique<SafeStateProvider>(SafeStateProvider(initial_state));
 
 }
 
@@ -27,6 +28,7 @@ void SorterSolver::solveBreadthFirst()
 	{
 		_process_queue();
 	}
+	wrong_change = _state_provider->caught_unsafe_combines;
 }
 
 SortingProblemSolution SorterSolver::get_solution()
@@ -36,12 +38,7 @@ SortingProblemSolution SorterSolver::get_solution()
 
 std::vector<SortingProblemState> SorterSolver::get_states()
 {
-	std::vector<SortingProblemState> r_;
-	r_.reserve(_reached_states.size());
-	for (auto it = _reached_states.begin(); it != _reached_states.end(); ) {
-		r_.push_back(std::move(_reached_states.extract(it++).value()));
-	}
-	return r_;
+	return _state_provider->get_states();
 }
 
 SortingProblemSolution SorterSolver::get_best_solution()
@@ -49,56 +46,26 @@ SortingProblemSolution SorterSolver::get_best_solution()
 	return *_best_solution;
 }
 
-std::vector<changePair> SorterSolver::_create_possible_changes(SortingProblemState base_state)
+
+
+std::vector<std::shared_ptr<SortingProblemSolution>> SorterSolver::_create_possible_solutions(std::shared_ptr<SortingProblemSolution> base_solutions)
 {
-	auto r_ =  std::vector<changePair>();
-
-	auto set_size = base_state.glasses.size();
-
-	for (auto i_to = 0; i_to < set_size;i_to++) 
-	for (auto i_from = 0; i_from < set_size; i_from++) {
-		if (i_to == i_from)
+	auto r_ =  std::vector<std::shared_ptr<SortingProblemSolution>>();
+	auto size = base_solutions->current->size();
+	for (uint16_t from = 0; from < size; from++)
+	for (uint16_t to   = 0; to   < size;   to++)
+	{
+		if (from == to)
 			continue;
-		const auto& gto = base_state.glasses[i_to];
-		const auto& gfrom = base_state.glasses[i_from];
-
-		if (gto.accepts_combine(gfrom))
-			r_.push_back({ i_to,i_from });
+		changePair change = { to,from };
+		//TODO: ad missing from-to check, which is now implemented in the SafeStateProvider
+		auto new_state = _state_provider->get_new_state(base_solutions->current, change);
+		if (new_state.get() != nullptr) {
+			auto new_solution = SortingProblemSolution(*base_solutions,change,new_state);
+			r_.push_back(std::make_shared<SortingProblemSolution>(new_solution));
+		}
 	}
-
 	return r_;
-}
-
-void SorterSolver::_remove_oscillations(std::vector<changePair>& change_list, SortingProblemSolution& solution)
-{
-	if (solution.changes.empty())
-		return;
-	std::pair<uint16_t, uint16_t> inverse_change = { solution.changes.back().second,solution.changes.back().first };
-	//check if it's a simple oscillation
-	change_list.erase(
-		std::remove_if(change_list.begin(), change_list.end(), [&](const changePair& change) {
-			return change == inverse_change;
-			}), change_list.end()
-	);
-}
-
-bool SorterSolver::_check_if_state_is_recursive(SortingProblemState state)
-{
-	auto prev = _reached_states.find(state);
-	return prev != _reached_states.end();
-}
-
-void SorterSolver::_apply_changes(std::vector<changePair> changes, SortingProblemSolution & base_solution)
-{
-	for (auto change : changes) {
-		//copy state
-		SortingProblemSolution new_state = base_solution;
-		//new_state.apply_change_fast(change);
-		if (!new_state.apply_change(change))
-			throw std::exception("Wrong change occured!");
-		_state_list.push(std::make_unique<SortingProblemSolution>(new_state));
-		q_additions++;
-	}
 }
 
 void SorterSolver::_process_queue()
@@ -111,34 +78,22 @@ void SorterSolver::_process_queue()
 	_state_list.pop();
 	inspected_solutions++;
 
-	//check if state is recursive
-	if (_check_if_state_is_recursive(state->current)) {
-		dead_solutions++;
-		return;
-	}
-	else
-	{
-		_reached_states.insert(state->current);
-	}
 
 	if (state->changes.size() > _best_score) {
 		_best_score = state->changes.size();
-		//TODO: change to shared pointer
-		_best_solution = std::make_unique<SortingProblemSolution>(*state);
+		_best_solution = state;
 	}
 
 	//check if state is fully homogenous
-	auto finisher = _check_fully_homogen(state->current);
+	auto finisher = state->current->is_homogen();
 	if (finisher) {
 		solved = true;
-		//TODO: change to shared pointer
-		_solution = std::make_unique<SortingProblemSolution>(*state);
+		_solution = state;
 		_broadcast_stop();
 		return;
 	}
 
-
-
+	//check if solution is in decay
 	auto decayed = state->is_decaying();
 	if (decayed) {
 		decayed_solutions++;
@@ -146,23 +101,16 @@ void SorterSolver::_process_queue()
 	}
 
 	// generate possible followups
-	auto changes = _create_possible_changes(state->current);
-	_remove_oscillations(changes, *state);
-	if (changes.empty()) {
+	auto new_solutions = _create_possible_solutions(state);
+	if (new_solutions.empty()) {
 		// dead solution
 		dead_solutions++;
 		return;
 	}
-	_apply_changes(changes, *state);
-}
-
-bool SorterSolver::_check_fully_homogen(SortingProblemState state)
-{
-	for (const auto& glass : state.glasses) {
-		if (!glass.is_homogen())
-			return false;
+	for (auto& I : new_solutions) {
+		q_additions++;
+		_state_list.push(I);
 	}
-	return true;
 }
 
 void SorterSolver::_broadcast_stop()
