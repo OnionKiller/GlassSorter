@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-#include "../StateProvider.h"
+#include "../Sorter-Solver/StateProvider.h"
 #include <vector>
 
 class TestStateProv : public StateProvider {
